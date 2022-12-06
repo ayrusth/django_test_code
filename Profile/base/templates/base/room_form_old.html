@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    /* .room-create{
+        display:grid;
+    } */
+</style>
+
+
+<div class="room-create">
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Submit"/>
+    </form>
+</div>
+
+{% endblock %}
