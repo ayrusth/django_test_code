@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.models import User
+# from django.contrib.auth.forms import UserCreationForm
 # Create your views here.
-from .models import Room, Topic, Message
-from .forms import RoomForm, UserForm
+from .models import Room, Topic, Message, User
+from .forms import RoomForm, UserForm, MyUserCreationFrom
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 
@@ -39,7 +39,7 @@ def loginPage(request):
             login(request,user)
             return redirect('home')
         else:
-            messages.error(request, 'Username or Password doesn\'t exists')
+            messages.error(request, 'Email or Password doesn\'t exists')
 
     context= {'page' : page}
     return render(request, 'base/login_register.html', context)
@@ -50,10 +50,10 @@ def logoutUser(request):
     return redirect('home')
 
 def registerPage(request):
-    form = UserCreationForm()
+    form = MyUserCreationFrom()
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = MyUserCreationFrom(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
@@ -109,7 +109,7 @@ def room(request, pk):
 
 def userProfile(request,pk):
     user = User.objects.get(id=pk)
-    rooms = user.room_set.all() #room is model name._set.all() get all children of rooms
+    rooms = user.room_set.all() #room is model name room._set.all() get all children of rooms
     room_messages = user.message_set.all()
     topics = Topic.objects.all()
     context = {'user': user, 'rooms': rooms, 'room_messages':room_messages, 'topics':topics}
@@ -207,7 +207,7 @@ def updateUser(request):
     form = UserForm(instance=user)
 
     if request.method == 'POST':
-        form = UserForm(request.POST, instance = user)
+        form = UserForm(request.POST, request.FILES, instance = user)  #request.Files used to link avatar image in backend
         if form.is_valid():
             form.save()
             return redirect('user-profile', pk= user.id)

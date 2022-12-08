@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="layout__body">
-                    <form class="form" action="#" method="POST">
+                    <form class="form" action="" method="POST" enctype="multipart/form-data" >  <!--enctype to upload images-->
                       {% csrf_token %}
                       <!-- using form model to create forms -->
                       {% for field in form %}   
